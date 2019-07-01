@@ -17,6 +17,11 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths":{
+      "@smd/core/*":["projects/stock-market-demo/src/app/core/*"],
+      "@smd/symbol-widget/*":["projects/stock-market-demo/src/app/symbol-overview-widget/*"],
+      "@smd/shared/*":["projects/stock-market-demo/src/app/shared/*"]
+    }
   }
 }

@@ -2,5 +2,125 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "projects": {}
+  "projects": {
+    "stock-market-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/stock-market-demo",
+      "sourceRoot": "projects/stock-market-demo/src",
+      "prefix": "smd",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/stock-market-demo",
+            "index": "projects/stock-market-demo/src/index.html",
+            "main": "projects/stock-market-demo/src/main.ts",
+            "polyfills": "projects/stock-market-demo/src/polyfills.ts",
+            "tsConfig": "projects/stock-market-demo/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/stock-market-demo/src/favicon.ico",
+              "projects/stock-market-demo/src/assets"
+            ],
+            "styles": [
+              "projects/stock-market-demo/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/stock-market-demo/src/environments/environment.ts",
+                  "with": "projects/stock-market-demo/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "stock-market-demo:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "stock-market-demo:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "stock-market-demo:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/stock-market-demo/src/test.ts",
+            "polyfills": "projects/stock-market-demo/src/polyfills.ts",
+            "tsConfig": "projects/stock-market-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/stock-market-demo/karma.conf.js",
+            "assets": [
+              "projects/stock-market-demo/src/favicon.ico",
+              "projects/stock-market-demo/src/assets"
+            ],
+            "styles": [
+              "projects/stock-market-demo/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/stock-market-demo/tsconfig.app.json",
+              "projects/stock-market-demo/tsconfig.spec.json",
+              "projects/stock-market-demo/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/stock-market-demo/e2e/protractor.conf.js",
+            "devServerTarget": "stock-market-demo:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "stock-market-demo:serve:production"
+            }
+          }
+        }
+      }
+    }
+    
+  },
+  "defaultProject": "stock-market-demo"
 }
