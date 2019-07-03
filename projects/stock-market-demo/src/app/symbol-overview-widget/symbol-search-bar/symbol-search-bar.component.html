@@ -1,0 +1,16 @@
+<p>
+  <mat-form-field>
+    <mat-select [formControl]="bankServerSideCtrl" placeholder="Symbol">
+      <!-- place ngx-mat-select-search inside mat-option to allow opening without initial selection -->
+      <mat-option>
+        <ngx-mat-select-search [formControl]="symbolFilteringCtrl" [searching]="searching" [placeholderLabel]="'Search symbol or company'" ></ngx-mat-select-search>
+      </mat-option>
+      <mat-option *ngFor="let symbolLookup of filteredSymbols | async" [value]="symbolLookup">
+        {{symbolLookup.name}} ({{symbolLookup.symbol}})
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</p>
+<p>
+  Selected Bank: {{bankServerSideCtrl.value?.name}}
+</p>

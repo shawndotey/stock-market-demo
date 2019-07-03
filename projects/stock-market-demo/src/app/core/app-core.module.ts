@@ -6,10 +6,10 @@ import { CommonModule } from '@angular/common';
   declarations: [],
   imports: [
     CommonModule,
-    OrderQueModule
+    // OrderQueModule
   ],
   exports: [
-    OrderQueModule
+    // OrderQueModule
   ]
 })
 export class AppCoreModule { }

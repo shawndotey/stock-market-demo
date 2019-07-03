@@ -1,4 +1,4 @@
-import { SymbolLookupService } from './symbol-lookup.service';
+import { StockSymbolLookupService } from './stock-symbol-lookup.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -8,9 +8,7 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ],
   providers: [
-    SymbolLookupService
+    StockSymbolLookupService
   ]
 })
-export class SymbolLookupModule {
-
-}
+export class StockSymbolLookupModule { }

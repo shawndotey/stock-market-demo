@@ -9,11 +9,11 @@ import { OrderQueService } from '@smd/core/order-que/order-que.service';
 export class SmdSymbolOverviewWidgetComponent implements OnInit {
 
   constructor(
-    orderQueService: OrderQueService
+    private orderQueService: OrderQueService
   ) { }
 
   ngOnInit() {
-
+    console.log('SmdSymbolOverviewWidgetComponent orderQueService', this.orderQueService);
   }
 
 }
