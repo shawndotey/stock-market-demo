@@ -1,3 +1,4 @@
+import { SymbolOrdersAveragePerMinuteModule } from './symbol-orders-average-per-minute/symbol-orders-average-per-minute.module';
 import { SymbolSearchBarModule } from './symbol-search-bar/symbol-search-bar.module';
 import { SymbolOrdersTableModule } from './symbol-orders-table/symbol-orders-table.module';
 import { NgModule } from '@angular/core';
@@ -11,7 +12,8 @@ import { OrderQueModule } from '@smd/core/order-que/order-que.module';
     CommonModule,
     OrderQueModule,
     SymbolOrdersTableModule,
-    SymbolSearchBarModule
+    SymbolSearchBarModule,
+    SymbolOrdersAveragePerMinuteModule
   ],
   providers: [
   ],

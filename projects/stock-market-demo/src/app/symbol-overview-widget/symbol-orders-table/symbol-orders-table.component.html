@@ -6,8 +6,12 @@
 
     <!-- ID Column -->
     <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-      <mat-cell *matCellDef="let row" data-label="ID :"> {{row.id}} </mat-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header> TIME </mat-header-cell>
+      <mat-cell *matCellDef="let row" data-label="TIME :"> 
+        <div>
+        {{row.timestamp | date:'h:mm:ss a z'}}
+      </div>
+      </mat-cell>
     </ng-container>
 
     <!-- Progress Column -->

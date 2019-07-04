@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { StockSymbolLookupModule } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.module';
 import { StoreModule } from '@ngrx/store';
 
+
 @NgModule({
   declarations: [SymbolSearchBarComponent],
   imports: [
@@ -16,7 +17,7 @@ import { StoreModule } from '@ngrx/store';
     MatFormFieldModule,
     NgxMatSelectSearchModule,
     StockSymbolLookupModule,
-    StoreModule
+    StoreModule,
   ],
   exports: [
     SymbolSearchBarComponent

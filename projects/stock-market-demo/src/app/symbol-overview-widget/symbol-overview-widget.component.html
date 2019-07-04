@@ -1,3 +1,3 @@
-<p>symbol-overview-widget works!</p>
-<smd-symbol-search-bar></smd-symbol-search-bar>
-<smd-symbol-orders-table></smd-symbol-orders-table>
+<smd-symbol-search-bar #searchBar initalSymbol="goog"></smd-symbol-search-bar>
+<smd-symbol-orders-table [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-table>
+<smd-symbol-orders-average-per-minute [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-average-per-minute>

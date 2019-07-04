@@ -1,24 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, tap, takeUntil, debounceTime, map, delay } from 'rxjs/operators';
+import { ReplaySubject, Subject, Observable, observable } from 'rxjs';
+import { filter, tap, takeUntil, debounceTime, map, delay, mergeMap } from 'rxjs/operators';
 import { StockSymbolLookupService } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.service';
 import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
-// import { delay } from 'q';
-
-
-
-
-/** list of banks */
-export const SYMBOLS: SymbolLookup[] = [
-  {name: 'Bank A', symbol: 'A'},
-  {name: 'Bank B', symbol: 'B'},
-  {name: 'Bank C', symbol: 'C'},
-  {name: 'Bank D', symbol: 'D'},
-  {name: 'Bank E', symbol: 'E'},
-
-];
-
+import { debug } from 'util';
 
 
 @Component({
@@ -27,59 +13,74 @@ export const SYMBOLS: SymbolLookup[] = [
   styleUrls: ['./symbol-search-bar.component.scss']
 })
 export class SymbolSearchBarComponent implements OnInit, OnDestroy {
-
+  @Output() symbolUpdate: Observable<SymbolLookup>;
+  @Input() initalSymbol: string;
   constructor(
     private symbolLookup: StockSymbolLookupService
   ) { }
 
- /** list of banks */
- protected symbols: SymbolLookup[] = SYMBOLS;
+  public searchBarCtrl: FormControl = new FormControl();
+  public symbolFilteringCtrl: FormControl = new FormControl();
+  public searching = false;
+  // public  filteredSymbols: ReplaySubject<SymbolLookup[]> = new ReplaySubject<SymbolLookup[]>(1);
+  public filteredSymbols: Observable<SymbolLookup[]>;
+  protected _onDestroy = new Subject<void>();
 
- /** control for the selected bank for server side filtering */
- public bankServerSideCtrl: FormControl = new FormControl();
+  ngOnInit() {
+    if (this.initalSymbol) {
+      this.symbolLookup.findMatchingSymbols$(this.initalSymbol).toPromise().then(val => {
 
- /** control for filter for server side. */
- public symbolFilteringCtrl: FormControl = new FormControl();
+        const first = val[0];
+        console.log(this.initalSymbol, first);
+        if (first) {
+          this.searchBarCtrl.setValue(first);
+        }
 
- /** indicate search operation is in progress */
- public searching = false;
+      });
 
- /** list of banks filtered after simulating server side search */
- public  filteredSymbols: ReplaySubject<SymbolLookup[]> = new ReplaySubject<SymbolLookup[]>(1);
+    }
 
- /** Subject that emits when the component has been destroyed. */
- protected _onDestroy = new Subject<void>();
+    this.filteredSymbols = this.symbolFilteringCtrl.valueChanges.pipe(
+      debounceTime(350),
+      filter(text => !!text),
+      tap((text) => {
+        console.log('searching = true');
+        this.searching = true;
+      }),
+      mergeMap(search => this.symbolLookup.findMatchingSymbols$(search)),
+      takeUntil(this._onDestroy),
+    );
 
- ngOnInit() {
+    // this.filteredSymbols =  this.symbolLookup.getSearchFilter$(releventSymbolSearchValueChanges).pipe(
+    //   takeUntil(this._onDestroy),
+    // );
 
-   // listen for search field value changes
-   this.symbolFilteringCtrl.valueChanges
-     .pipe(
-       filter(search => !!search),
-       tap(() => this.searching = true),
-       debounceTime(200),
-       map(search => {
-         if (!this.symbols) {
-           return [];
-         }
+    this.filteredSymbols.subscribe(filteredSymbols => {
+      console.log('searching = false');
+      this.searching = false;
+      // this.filteredSymbols.next(filteredSymbols);
+    }, error => {
+      console.log('searching = false error');
+      this.searching = false;
+      // handle error...
+    }
+    );
+    this.initSymbolUpdate();
 
-         // simulate server fetching and filtering data
-         return this.symbols.filter(bank => bank.name.toLowerCase().indexOf(search) > -1);
-       }),
-       delay(130),
-       takeUntil(this._onDestroy),
-     )
-     .subscribe(filteredBanks => {
-       this.searching = false;
-       this.filteredSymbols.next(filteredBanks);
-     },
-       error => {
-         // no errors in our simulated example
-         this.searching = false;
-         // handle error...
-       });
 
- }
+  }
+
+  initSymbolUpdate() {
+
+    this.symbolUpdate =  new Observable<SymbolLookup>( observable => {
+      this.searchBarCtrl.valueChanges.pipe(
+        takeUntil(this._onDestroy),
+      ).subscribe(symbolLookup => {
+        observable.next(symbolLookup);
+      });
+    });
+
+  }
 
  ngOnDestroy() {
    this._onDestroy.next();

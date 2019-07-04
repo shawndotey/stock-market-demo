@@ -1,9 +1,11 @@
+import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
 import { DynamicScriptLoaderService } from './../dynamic-script-loader/dynamic-script-loader.service';
 import { Script } from './../dynamic-script-loader/model/script.class';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, filter, flatMap, concatMap, mergeAll} from 'rxjs/operators';
 import { MarketOrder } from './model/market-order.class';
+import { SYMBOLS } from '../stock-symbol-lookup/stock-symbol-lookup.service';
 export const ScriptStore: Script[] = [
   {name: 'pubnub', src: 'https://cdn.pubnub.com/sdk/javascript/pubnub.4.21.7.js'},
 ];
@@ -18,12 +20,13 @@ export declare var PubNub: any;
 })
 export class OrderQueService {
   constructor(
-    private scriptLoaderService: DynamicScriptLoaderService
+    private scriptLoaderService: DynamicScriptLoaderService,
   ) {
+    this.symbols = SYMBOLS;
     console.log('OrderQueService constructor');
     this.initObservables();
     this.scriptLoaderService.addScripts(...ScriptStore);
-    this.scriptLoaderService.load('pubnub').then(data => {
+    this.scriptLoaderService.load('pubnub').then(info => {
 
 
       this.pubnubMarketOrdersDemo = new PubNub({
@@ -41,7 +44,8 @@ export class OrderQueService {
     }).catch(error => console.log(error));
 
   }
-  private _order$ = new BehaviorSubject<MarketOrder>(new MarketOrder());
+  private symbols: SymbolLookup[] = [];
+  private; _order$ = new BehaviorSubject<MarketOrder>(new MarketOrder());
   order$: Observable<MarketOrder> = this._order$.asObservable();
   orders$: Observable<MarketOrder[]>;
   last10000Orders: MarketOrder[] = [];
@@ -49,12 +53,15 @@ export class OrderQueService {
   lastid = -1;
   getOrdersBySymbol$(symbol: string, max = 100): Observable<MarketOrder[]> {
     symbol = symbol.toLowerCase();
-    const filteredMarketOrders = [];
     // flatMap
     const ordersBySymbol$ = this.orders$.pipe(
       map(orders => {
         const filteredOrders = orders.filter(order => {
-          return order.symbol === symbol;
+          if (!order || !order.symbol) {
+            // console.log('failed ordersBySymbol$', order);
+            return false;
+          }
+          return order.symbol.toLowerCase() === symbol;
         });
         filteredOrders.splice(max);
         return filteredOrders;
@@ -86,7 +93,7 @@ export class OrderQueService {
     });
   }
 
-  handlePubnubData(data) {
+  private handlePubnubData(data) {
     const marketOrder = this.convertDataToMarketOrder(data);
     if (marketOrder) {
       this._order$.next(marketOrder);
@@ -98,12 +105,24 @@ export class OrderQueService {
   }
   private convertMessageToMarketOrder(message): MarketOrder {
     const marketOrder = new MarketOrder();
-    marketOrder.price = message.bid_price;
+    marketOrder.price = Math.round(message.bid_price * 100) / 100;
     marketOrder.quantity = message.order_quantity;
-    marketOrder.timestamp = message.timestamp;
+    marketOrder.timestamp = Date.now();
     marketOrder.type = message.trade_type;
-    marketOrder.symbol = message.symbol.toLowerCase();
+    marketOrder.name = message.symbol;
+    marketOrder.symbol = this.correctOrderSymbol(message.symbol);
     marketOrder.id = ++this.lastid;
+    // console.log(marketOrder);
     return marketOrder;
+  }
+  private correctOrderSymbol(name: string) {
+    name = name.toLowerCase();
+    const match = this.symbols.filter(lookup => {
+      return lookup.name.toLowerCase() === name;
+    })[0];
+    if (match) {
+      return match.symbol;
+    }
+    return undefined;
   }
 }
