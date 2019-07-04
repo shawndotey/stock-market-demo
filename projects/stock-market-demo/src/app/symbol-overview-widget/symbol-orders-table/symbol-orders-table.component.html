@@ -9,23 +9,18 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header> TIME </mat-header-cell>
       <mat-cell *matCellDef="let row" data-label="TIME :"> 
         <div>
-        {{row.timestamp | date:'h:mm:ss a z'}}
+        {{row.timestamp | date:'MMMM d, y h:mm:ss'}}
       </div>
       </mat-cell>
     </ng-container>
 
     <!-- Progress Column -->
     <ng-container matColumnDef="price">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> PROGRESS </mat-header-cell>
-      <mat-cell *matCellDef="let row" data-label="PROGRESS :"> ${{row.price}} </mat-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header> PRICE </mat-header-cell>
+      <mat-cell *matCellDef="let row" data-label="PRICE :"> ${{row.price}} </mat-cell>
     </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="symbol">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> NAME </mat-header-cell>
-      <mat-cell *matCellDef="let row" data-label="NAME :"> {{row.symbol}} </mat-cell>
-    </ng-container>
-
+   
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;">
     </mat-row>

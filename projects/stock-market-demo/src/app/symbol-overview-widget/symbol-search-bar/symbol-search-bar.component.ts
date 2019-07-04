@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject, Subject, Observable, observable } from 'rxjs';
 import { filter, tap, takeUntil, debounceTime, map, delay, mergeMap } from 'rxjs/operators';
-import { StockSymbolLookupService } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.service';
+import { StockSymbolLookupService, SYMBOLS } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.service';
 import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
 import { debug } from 'util';
 
@@ -13,34 +13,28 @@ import { debug } from 'util';
   styleUrls: ['./symbol-search-bar.component.scss']
 })
 export class SymbolSearchBarComponent implements OnInit, OnDestroy {
+
+
+  SYMBOLS = SYMBOLS;
+
   @Output() symbolUpdate: Observable<SymbolLookup>;
   @Input() initalSymbol: string;
   constructor(
     private symbolLookup: StockSymbolLookupService
   ) { }
-
+  public currentSymbolLookup: SymbolLookup;
   public searchBarCtrl: FormControl = new FormControl();
   public symbolFilteringCtrl: FormControl = new FormControl();
   public searching = false;
   // public  filteredSymbols: ReplaySubject<SymbolLookup[]> = new ReplaySubject<SymbolLookup[]>(1);
-  public filteredSymbols: Observable<SymbolLookup[]>;
+  public filteredSymbols$: Observable<SymbolLookup[]>;
+  public filteredSymbols: SymbolLookup[] = [];
   protected _onDestroy = new Subject<void>();
 
   ngOnInit() {
-    if (this.initalSymbol) {
-      this.symbolLookup.findMatchingSymbols$(this.initalSymbol).toPromise().then(val => {
 
-        const first = val[0];
-        console.log(this.initalSymbol, first);
-        if (first) {
-          this.searchBarCtrl.setValue(first);
-        }
 
-      });
-
-    }
-
-    this.filteredSymbols = this.symbolFilteringCtrl.valueChanges.pipe(
+    this.filteredSymbols$ = this.symbolFilteringCtrl.valueChanges.pipe(
       debounceTime(350),
       filter(text => !!text),
       tap((text) => {
@@ -51,14 +45,10 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
       takeUntil(this._onDestroy),
     );
 
-    // this.filteredSymbols =  this.symbolLookup.getSearchFilter$(releventSymbolSearchValueChanges).pipe(
-    //   takeUntil(this._onDestroy),
-    // );
-
-    this.filteredSymbols.subscribe(filteredSymbols => {
+    this.filteredSymbols$.subscribe(filteredSymbols => {
+      this.filteredSymbols = filteredSymbols;
       console.log('searching = false');
       this.searching = false;
-      // this.filteredSymbols.next(filteredSymbols);
     }, error => {
       console.log('searching = false error');
       this.searching = false;
@@ -67,6 +57,21 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
     );
     this.initSymbolUpdate();
 
+    if (this.initalSymbol) {
+      this.symbolLookup.findMatchingSymbols$(this.initalSymbol).toPromise().then(matchingSymbols => {
+
+        const first = matchingSymbols[0];
+        console.log(this.initalSymbol, first);
+        if (first) {
+          this.searchBarCtrl.setValue(first);
+          this.filteredSymbols = matchingSymbols;
+          // this.symbolFilteringCtrl.setValue(first.symbol);
+          this.currentSymbolLookup = first;
+        }
+
+      });
+
+    }
 
   }
 

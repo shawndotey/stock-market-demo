@@ -1,15 +1,15 @@
-<p style="text-align: left;">
-  {{searching ? 'searching...': 'Selected Stock: '+searchBarCtrl.value?.name}}
+<p>
+  {{searching ? 'searching...': ''}}
 </p>
 
 <p>
   <mat-form-field>
-    <mat-select [formControl]="searchBarCtrl" placeholder="Symbol">
+    <mat-select [formControl]="searchBarCtrl" placeholder="Stock" [(value)]="currentSymbolLookup">
       <!-- place ngx-mat-select-search inside mat-option to allow opening without initial selection -->
       <mat-option>
         <ngx-mat-select-search [formControl]="symbolFilteringCtrl" [searching]="searching" [placeholderLabel]="'Search symbol or company'" ></ngx-mat-select-search>
       </mat-option>
-      <mat-option *ngFor="let symbolLookup of filteredSymbols | async" [value]="symbolLookup">
+      <mat-option *ngFor="let symbolLookup of filteredSymbols" [value]="symbolLookup">
         {{symbolLookup.name}} ({{symbolLookup.symbol}})
       </mat-option>
     </mat-select>

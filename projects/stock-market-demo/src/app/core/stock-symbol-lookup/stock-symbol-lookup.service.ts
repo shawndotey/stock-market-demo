@@ -33,7 +33,15 @@ export class StockSymbolLookupService {
         return;
       }
 
-      const filteredSymbols = this.symbols.filter(symbol => symbol.name.toLowerCase().indexOf(criteria) > -1);
+      const filteredSymbols = this.symbols.filter(symbol => {
+        if(symbol.name.toLowerCase().indexOf(criteria) > -1){
+          return true;
+        }
+        if(symbol.symbol.toLowerCase().indexOf(criteria) > -1){
+          return true;
+        }
+        return false;
+      });
       observer.next(filteredSymbols);
       observer.complete();
     })

@@ -24,7 +24,7 @@ export class SymbolOrdersTableComponent implements OnInit , AfterViewInit, OnDes
   private _onDestroy = new Subject<void>();
   today: number = Date.now();
 
-  displayedColumns = ['id', 'symbol', 'price'];
+  displayedColumns = ['id', 'price'];
   dataSource: MatTableDataSource<MarketOrder>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

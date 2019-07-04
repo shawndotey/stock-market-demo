@@ -1,3 +1,4 @@
+
 import { Component, OnInit, OnDestroy, OnChanges, Input } from '@angular/core';
 import { OrderQueService } from '@smd/core/order-que/order-que.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
@@ -60,7 +61,6 @@ constructor(
             total = total + order.price;
           });
           const average = total / orders.length;
-          console.log(total,  orders.length);
           return Math.round(average * 100) / 100;
         }
       )

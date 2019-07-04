@@ -1,3 +1,4 @@
+import { MatFormFieldModule } from '@angular/material';
 import { NgModule, Input, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SymbolOrdersAveragePerMinuteComponent } from './symbol-orders-average-per-minute.component';
@@ -9,7 +10,8 @@ import { constructor } from 'q';
 @NgModule({
   declarations: [SymbolOrdersAveragePerMinuteComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    MatFormFieldModule
   ],
   exports: [
     SymbolOrdersAveragePerMinuteComponent
