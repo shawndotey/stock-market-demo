@@ -1,3 +1,12 @@
-<smd-symbol-search-bar #searchBar initalSymbol="goog"></smd-symbol-search-bar>
-<smd-symbol-orders-average-per-minute [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-average-per-minute>
+<div class="symbol-search-bar-container">
+ <smd-symbol-search-bar #searchBar initalSymbol="goog"></smd-symbol-search-bar>
+</div>
+
+
+ <div class="symbol-average-per-minute-container">
+  <smd-symbol-orders-average-per-minute [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-average-per-minute>
+ </div>
+
+<div class="symbol-overview-table-container">
 <smd-symbol-orders-table [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-table>
+</div>

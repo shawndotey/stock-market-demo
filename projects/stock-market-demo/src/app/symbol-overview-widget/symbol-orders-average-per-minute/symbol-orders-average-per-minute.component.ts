@@ -4,91 +4,60 @@ import { OrderQueService } from '@smd/core/order-que/order-que.service';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { filter, mergeMap, takeUntil, map } from 'rxjs/operators';
 import { MarketOrder } from '@smd/core/order-que/model/market-order.class';
+import { SymbolOrdersAveragePerMinuteService } from './symbol-orders-average-per-minute.service';
 
 @Component({
   selector: 'smd-symbol-orders-average-per-minute',
   templateUrl: './symbol-orders-average-per-minute.component.html',
-  styleUrls: ['./symbol-orders-average-per-minute.component.scss']
+  styleUrls: ['./symbol-orders-average-per-minute.component.scss'],
+  providers: [
+    SymbolOrdersAveragePerMinuteService
+  ]
 })
 export class SymbolOrdersAveragePerMinuteComponent implements OnInit, OnDestroy, OnChanges  {
 
   @Input() stockSymbol: string;
 constructor(
-    private orderQueService: OrderQueService
+    private orderQueService: OrderQueService,
+    protected averageProvider: SymbolOrdersAveragePerMinuteService
   ) {
 
   }
   protected averagePrice$: Observable<number>;
   protected minPrice$: Observable<number>;
   protected maxPrice$: Observable<number>;
-  private _onDestroy = new Subject<void>();
+  protected filteredOrders$: Observable<MarketOrder[]>;
+  private; _onDestroy = new Subject<void>();
   private stockSymbol$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   ngOnInit() {
     this.initStockSymbol();
+    this.initAverages();
   }
   ngOnChanges(changes) {
-    console.log('ngOnChanges changes.stockSymbol', changes.stockSymbol.currentValue);
     this.stockSymbol$.next(changes.stockSymbol.currentValue);
-    // changes.prop contains the old and the new value...
   }
   initStockSymbol() {
-    const orders$: Observable<MarketOrder[]> = this.stockSymbol$.pipe(
+    this.filteredOrders$ = this.stockSymbol$.pipe(
       filter(symbol => !!symbol),
       mergeMap(symbol => this.orderQueService.getOrdersBySymbol$(symbol, 1000)),
       takeUntil(this._onDestroy)
     );
 
-    const ordersLastMinute$ = orders$.pipe(
-
-      map(orders => {
-        const now = Date.now();
-
-        return orders.filter(order => {
-          const seconds = Math.floor((now - order.timestamp) / 1000);
-          const interval = Math.floor(seconds / 60);
-          return (interval <= 1 );
-        });
-      }),
-      takeUntil(this._onDestroy)
-      );
-
-
-    this.averagePrice$ = ordersLastMinute$.pipe(
-      map(
-        orders => {
-          let total = 0;
-          orders.forEach(order => {
-            total = total + order.price;
-          });
-          const average = total / orders.length;
-          return Math.round(average * 100) / 100;
-        }
-      )
-    );
-    this.maxPrice$ = ordersLastMinute$.pipe(
-      map(
-        orders => {
-          let max = 0;
-          orders.forEach(order => {
-            max = max < order.price ? order.price : max;
-          });
-          return Math.round(max * 100) / 100;
-        }
-      )
-    );
-    this.minPrice$ = ordersLastMinute$.pipe(
-      map(
-        orders => {
-          let min = null;
-          orders.forEach(order => {
-            min = min > order.price || min === null ? order.price : min;
-          });
-          return Math.round(min * 100) / 100;
-        }
-      )
-    );
-
     this.stockSymbol$.next(this.stockSymbol);
+  }
+  initAverages() {
+
+    this.averagePrice$ = this.averageProvider.getAverage$(this.filteredOrders$).pipe(
+      takeUntil(this._onDestroy)
+    );
+
+    this.minPrice$ = this.averageProvider.getMin$(this.filteredOrders$).pipe(
+      takeUntil(this._onDestroy)
+    );
+
+    this.maxPrice$ = this.averageProvider.getMax$(this.filteredOrders$).pipe(
+      takeUntil(this._onDestroy)
+    );
 
   }
   ngOnDestroy() {

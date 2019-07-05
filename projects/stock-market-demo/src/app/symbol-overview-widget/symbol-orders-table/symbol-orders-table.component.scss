@@ -46,4 +46,15 @@
  .mat-header-row{
   display: none;
  }
+
+}
+.symbol-orders-table-container{
+  mat-header-cell {
+    display:flex;
+    justify-content:flex-end;
+   }
+   mat-cell{
+    display:flex;
+    justify-content:flex-end;
+   }
 }

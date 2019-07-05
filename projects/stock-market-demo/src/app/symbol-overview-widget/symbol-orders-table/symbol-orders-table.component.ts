@@ -43,7 +43,7 @@ export class SymbolOrdersTableComponent implements OnInit , AfterViewInit, OnDes
   initStockSymbol() {
     this.stockSymbol$.pipe(
       filter(symbol => !!symbol),
-      mergeMap(symbol => this.orderQueService.getOrdersBySymbol$(symbol)),
+      mergeMap(symbol => this.orderQueService.getOrdersBySymbol$(symbol, 10)),
       takeUntil(this._onDestroy)
     ).subscribe(orders => {
       this.dataSource.data = orders;
