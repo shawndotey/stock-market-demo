@@ -2,24 +2,33 @@
 
 <div class="symbol-orders-table-container mat-elevation-z8">
 
-  <mat-table [dataSource]="dataSource" matSort>
+  <mat-table [dataSource]="dataSource" matSort *ngIf="!(searching$ | async)">
 
     <!-- ID Column -->
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef mat-sort-header> TIME </mat-header-cell>
       <mat-cell *matCellDef="let row" data-label="TIME :"> 
         <div>
-        {{row.timestamp | date:'MMMM d, y h:mm:ss'}}
+        {{row.timestamp | date:'MMMM d h:mm:ss'}}
       </div>
       </mat-cell>
     </ng-container>
+
+     <!-- Symbol Column -->
+     <ng-container matColumnDef="symbol">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> SYMBOL </mat-header-cell>
+        <mat-cell *matCellDef="let row" data-label="SYMBOL :"> 
+          <div>
+          {{row.symbol}}
+        </div>
+        </mat-cell>
+      </ng-container>
 
     <!-- Progress Column -->
     <ng-container matColumnDef="price">
       <mat-header-cell *matHeaderCellDef mat-sort-header> PRICE </mat-header-cell>
       <mat-cell *matCellDef="let row" data-label="PRICE :"> ${{row.price}} </mat-cell>
     </ng-container>
-
    
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;">

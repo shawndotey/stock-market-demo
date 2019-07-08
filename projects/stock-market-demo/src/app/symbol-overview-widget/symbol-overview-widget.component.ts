@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { OrderQueService } from '@smd/core/order-que/order-que.service';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'smd-symbol-overview-widget',
@@ -8,12 +7,9 @@ import { OrderQueService } from '@smd/core/order-que/order-que.service';
 })
 export class SmdSymbolOverviewWidgetComponent implements OnInit {
 
-  constructor(
-    private orderQueService: OrderQueService
-  ) { }
-
+  constructor() { }
+  @Input() initalSymbol = 'goog';
   ngOnInit() {
-    console.log('SmdSymbolOverviewWidgetComponent orderQueService', this.orderQueService);
   }
 
 }

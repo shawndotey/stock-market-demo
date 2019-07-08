@@ -3,8 +3,6 @@ import { OrderQueService } from './order-que.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
-
 @NgModule({
   declarations: [],
   imports: [
@@ -17,10 +15,4 @@ import { CommonModule } from '@angular/common';
   exports: [
   ]
 })
-export class OrderQueModule {
-constructor() {
-
-
-}
-
-}
+export class OrderQueModule {}

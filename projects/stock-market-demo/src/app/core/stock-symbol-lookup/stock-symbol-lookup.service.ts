@@ -8,25 +8,19 @@ export const SYMBOLS: SymbolLookup[] = [
   {name: 'Google', symbol: 'GOOG'},
   {name: 'Bespin Gas', symbol: 'COG'},
   {name: 'Apple', symbol: 'AAPL'},
-  {name: 'Elerium', symbol: 'EMR'},
-
-
+  {name: 'Elerium', symbol: 'EMR'}
 ];
-
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class StockSymbolLookupService {
   protected symbols: SymbolLookup[] = SYMBOLS;
-  constructor() {
 
-  }
   findMatchingSymbols$( criteria: string): Observable<SymbolLookup[]> {
 
     const finder$ = new Observable<SymbolLookup[]>(observer => {
-      console.log('findSymbol$ finder$ criteria', criteria);
+
       if (!this.symbols) {
         observer.next([]);
         observer.complete();
@@ -34,10 +28,10 @@ export class StockSymbolLookupService {
       }
 
       const filteredSymbols = this.symbols.filter(symbol => {
-        if(symbol.name.toLowerCase().indexOf(criteria) > -1){
+        if (symbol.name.toLowerCase().indexOf(criteria) > -1) {
           return true;
         }
-        if(symbol.symbol.toLowerCase().indexOf(criteria) > -1){
+        if (symbol.symbol.toLowerCase().indexOf(criteria) > -1) {
           return true;
         }
         return false;

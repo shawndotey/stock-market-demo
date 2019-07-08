@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SymbolOrdersAveragePerMinuteComponent } from './symbol-orders-average-per-minute.component';
+import { SymbolOrdersPerMinuteComponent } from './symbol-orders-per-minute.component';
 
 describe('SymbolOrdersAveragePerMinuteComponent', () => {
-  let component: SymbolOrdersAveragePerMinuteComponent;
-  let fixture: ComponentFixture<SymbolOrdersAveragePerMinuteComponent>;
+  let component: SymbolOrdersPerMinuteComponent;
+  let fixture: ComponentFixture<SymbolOrdersPerMinuteComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SymbolOrdersAveragePerMinuteComponent ]
+      declarations: [ SymbolOrdersPerMinuteComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SymbolOrdersAveragePerMinuteComponent);
+    fixture = TestBed.createComponent(SymbolOrdersPerMinuteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

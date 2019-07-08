@@ -38,5 +38,8 @@
  // @import "~bootstrap/scss/spinners";
  // @import "~bootstrap/scss/utilities";
  // @import "~bootstrap/scss/print";
-
+ .col-centered {
+   float: none;
+   margin: 0 auto;
+ }
 }

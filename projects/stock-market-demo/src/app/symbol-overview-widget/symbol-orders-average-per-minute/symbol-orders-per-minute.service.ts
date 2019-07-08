@@ -6,43 +6,43 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class SymbolOrdersAveragePerMinuteService {
+export class SymbolOrdersPerMinuteService {
   public averagePrice$: Observable<number>;
   public minPrice$: Observable<number>;
   public maxPrice$: Observable<number>;
   public ordersLastMinute$: Observable<MarketOrder[]>;
   constructor() { }
 
-  public getOrdersFromLastMinute$(orders$: Observable<MarketOrder[]>) {
+  public getOrdersFromSecondsAgo$(orders$: Observable<MarketOrder[]>, secondsAgo: number) {
     return orders$.pipe(
       map(orders => {
         const now = Date.now();
         return orders.filter(order => {
           const seconds = Math.floor((now - order.timestamp) / 1000);
-          const interval = Math.floor(seconds / 60);
+          const interval = Math.floor(seconds / secondsAgo);
           return (interval <= 1);
         });
       })
     );
   }
 
-  public getAverage$(orders$: Observable<MarketOrder[]>) {
-    return this.getOrdersFromLastMinute$(orders$).pipe(
+  public getAverage$(orders$: Observable<MarketOrder[]>,  secondsAgo: number): Observable<number> {
+    return this.getOrdersFromSecondsAgo$(orders$,  secondsAgo).pipe(
       map(
         orders => {
           let total = 0;
           orders.forEach(order => {
             total = total + order.price;
           });
-          const average = total / orders.length;
+          const average = (total / orders.length) || 0;
           return Math.round(average * 100) / 100;
         }
       )
     );
   }
 
-  public getMax$(orders$: Observable<MarketOrder[]>) {
-    return this.getOrdersFromLastMinute$(orders$).pipe(
+  public getMax$(orders$: Observable<MarketOrder[]>,  secondsAgo: number): Observable<number> {
+    return this.getOrdersFromSecondsAgo$(orders$,  secondsAgo).pipe(
       map(
         orders => {
           let max = 0;
@@ -55,8 +55,8 @@ export class SymbolOrdersAveragePerMinuteService {
     );
   }
 
-  public getMin$(orders$: Observable<MarketOrder[]>) {
-    return this.getOrdersFromLastMinute$(orders$).pipe(
+  public getMin$(orders$: Observable<MarketOrder[]>,  secondsAgo: number): Observable<number> {
+    return this.getOrdersFromSecondsAgo$(orders$,  secondsAgo).pipe(
       map(
         orders => {
           let min = null;

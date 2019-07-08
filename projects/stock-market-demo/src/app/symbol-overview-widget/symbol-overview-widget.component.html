@@ -1,12 +1,24 @@
-<div class="symbol-search-bar-container">
- <smd-symbol-search-bar #searchBar initalSymbol="goog"></smd-symbol-search-bar>
+<div class="row">
+  <div class="col col-md-6 col-centered">
+    <div class="symbol-search-bar-container">
+      <smd-symbol-search-bar #searchBar [initalSymbol]="initalSymbol"></smd-symbol-search-bar>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col col-md-6 col-centered">
+    <div class="symbol-average-per-minute-container">
+      <smd-symbol-orders-per-minute [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol">
+      </smd-symbol-orders-per-minute>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col col-md-6 col-centered">
+    <div class="symbol-overview-table-container">
+      <smd-symbol-orders-table [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"
+        [searching$]="searchBar.searching$"></smd-symbol-orders-table>
+    </div>
+  </div>
 </div>
 
-
- <div class="symbol-average-per-minute-container">
-  <smd-symbol-orders-average-per-minute [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-average-per-minute>
- </div>
-
-<div class="symbol-overview-table-container">
-<smd-symbol-orders-table [stockSymbol]="((searchBar.symbolUpdate | async) || {}).symbol"></smd-symbol-orders-table>
-</div>

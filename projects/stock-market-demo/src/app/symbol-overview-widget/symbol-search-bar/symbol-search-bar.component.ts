@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Output, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ReplaySubject, Subject, Observable, observable } from 'rxjs';
+import { ReplaySubject, Subject, Observable, observable, BehaviorSubject } from 'rxjs';
 import { filter, tap, takeUntil, debounceTime, map, delay, mergeMap } from 'rxjs/operators';
 import { StockSymbolLookupService, SYMBOLS } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.service';
 import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
@@ -19,14 +19,17 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
 
   @Output() symbolUpdate: Observable<SymbolLookup>;
   @Input() initalSymbol: string;
+  @Output() searching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor(
     private symbolLookup: StockSymbolLookupService
   ) { }
   public currentSymbolLookup: SymbolLookup;
   public searchBarCtrl: FormControl = new FormControl();
   public symbolFilteringCtrl: FormControl = new FormControl();
-  public searching = false;
-  // public  filteredSymbols: ReplaySubject<SymbolLookup[]> = new ReplaySubject<SymbolLookup[]>(1);
+  set searching(value) {
+    this.searching$.next(value);
+  }
   public filteredSymbols$: Observable<SymbolLookup[]>;
   public filteredSymbols: SymbolLookup[] = [];
   protected _onDestroy = new Subject<void>();
@@ -38,7 +41,6 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
       debounceTime(350),
       filter(text => !!text),
       tap((text) => {
-        console.log('searching = true');
         this.searching = true;
       }),
       mergeMap(search => this.symbolLookup.findMatchingSymbols$(search)),
@@ -47,32 +49,25 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
 
     this.filteredSymbols$.subscribe(filteredSymbols => {
       this.filteredSymbols = filteredSymbols;
-      console.log('searching = false');
       this.searching = false;
     }, error => {
-      console.log('searching = false error');
       this.searching = false;
       // handle error...
-    }
-    );
+    });
+
     this.initSymbolUpdate();
 
     if (this.initalSymbol) {
       this.symbolLookup.findMatchingSymbols$(this.initalSymbol).toPromise().then(matchingSymbols => {
 
         const first = matchingSymbols[0];
-        console.log(this.initalSymbol, first);
         if (first) {
           this.searchBarCtrl.setValue(first);
           this.filteredSymbols = matchingSymbols;
-          // this.symbolFilteringCtrl.setValue(first.symbol);
           this.currentSymbolLookup = first;
         }
-
       });
-
     }
-
   }
 
   initSymbolUpdate() {

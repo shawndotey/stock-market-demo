@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, AfterViewInit, Input, OnDestroy, OnChange
 import { OrderQueService } from '@smd/core/order-que/order-que.service';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { takeUntil, mergeMap, filter } from 'rxjs/operators';
+import { takeUntil, mergeMap, filter, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -14,6 +14,7 @@ import { takeUntil, mergeMap, filter } from 'rxjs/operators';
 export class SymbolOrdersTableComponent implements OnInit , AfterViewInit, OnDestroy, OnChanges {
 
   @Input() stockSymbol: string;
+  @Input() searching$: Observable<boolean>;
   constructor(
     private orderQueService: OrderQueService
   ) {
@@ -24,7 +25,7 @@ export class SymbolOrdersTableComponent implements OnInit , AfterViewInit, OnDes
   private _onDestroy = new Subject<void>();
   today: number = Date.now();
 
-  displayedColumns = ['id', 'price'];
+  displayedColumns = ['id', 'symbol', 'price'];
   dataSource: MatTableDataSource<MarketOrder>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -36,14 +37,12 @@ export class SymbolOrdersTableComponent implements OnInit , AfterViewInit, OnDes
     this.dataSource.sort = this.sort;
   }
   ngOnInit() {
-
     this.initStockSymbol();
-
   }
   initStockSymbol() {
     this.stockSymbol$.pipe(
       filter(symbol => !!symbol),
-      mergeMap(symbol => this.orderQueService.getOrdersBySymbol$(symbol, 10)),
+      switchMap(symbol => this.orderQueService.getOrdersBySymbol$(symbol, 10)),
       takeUntil(this._onDestroy)
     ).subscribe(orders => {
       this.dataSource.data = orders;
@@ -51,9 +50,7 @@ export class SymbolOrdersTableComponent implements OnInit , AfterViewInit, OnDes
     this.stockSymbol$.next(this.stockSymbol);
   }
   ngOnChanges(changes) {
-    console.log('ngOnChanges changes.stockSymbol', changes.stockSymbol.currentValue );
     this.stockSymbol$.next(changes.stockSymbol.currentValue );
-    // changes.prop contains the old and the new value...
   }
   ngOnDestroy() {
     this._onDestroy.next();

@@ -1,4 +1,4 @@
-import { SymbolOrdersAveragePerMinuteModule } from './symbol-orders-average-per-minute/symbol-orders-average-per-minute.module';
+import { SymbolOrdersAveragePerMinuteModule } from './symbol-orders-average-per-minute/symbol-orders-per-minute.module';
 import { SymbolSearchBarModule } from './symbol-search-bar/symbol-search-bar.module';
 import { SymbolOrdersTableModule } from './symbol-orders-table/symbol-orders-table.module';
 import { NgModule } from '@angular/core';
