@@ -1,7 +1,7 @@
 <div class="row">
 
   <div class="col col-md-4">
-    <smd-symbol-aggregate title="Minimum" [aggregatePrice$]="minPrice$"></smd-symbol-aggregate>
+    <smd-symbol-aggregate *ngIf="currentUserMode === 'level2' || currentUserMode === 'level3' " title="Minimum" [aggregatePrice$]="minPrice$"></smd-symbol-aggregate>
   </div>
 
   <div class="col col-md-4">
@@ -9,7 +9,7 @@
   </div>
 
   <div class="col col-md-4">
-    <smd-symbol-aggregate title="Maximum" [aggregatePrice$]="maxPrice$"></smd-symbol-aggregate>
+    <smd-symbol-aggregate *ngIf="currentUserMode === 'level2' || currentUserMode === 'level3'" title="Maximum" [aggregatePrice$]="maxPrice$"></smd-symbol-aggregate>
   </div>
 
 </div>

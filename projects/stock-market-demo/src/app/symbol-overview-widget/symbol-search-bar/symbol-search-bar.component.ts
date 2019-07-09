@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy, Output, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ReplaySubject, Subject, Observable, observable, BehaviorSubject } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { filter, tap, takeUntil, debounceTime, map, delay, mergeMap } from 'rxjs/operators';
 import { StockSymbolLookupService, SYMBOLS } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.service';
 import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
-import { debug } from 'util';
 
 
 @Component({

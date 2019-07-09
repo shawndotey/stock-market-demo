@@ -5,6 +5,9 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { filter, mergeMap, takeUntil, map, tap, switchMap } from 'rxjs/operators';
 import { MarketOrder } from '@smd/core/order-que/model/market-order.class';
 import { SymbolOrdersPerMinuteService } from './symbol-orders-per-minute.service';
+import { Store, select } from '@ngrx/store';
+import { IAppState } from '@smd/core/app-store/app.state';
+import { selectConfigSuccess } from '@smd/core/config/store/selectors/config.selector';
 
 
 @Component({
@@ -21,7 +24,8 @@ export class SymbolOrdersPerMinuteComponent implements OnInit, OnDestroy, OnChan
 
   constructor(
     private orderQueService: OrderQueService,
-    protected averageProvider: SymbolOrdersPerMinuteService
+    protected averageProvider: SymbolOrdersPerMinuteService,
+    private store: Store<IAppState>
   ) {}
 
   protected TIME_FRAME = 60;
@@ -31,6 +35,8 @@ export class SymbolOrdersPerMinuteComponent implements OnInit, OnDestroy, OnChan
   protected filteredOrders$: Observable<MarketOrder[]>;
   private _onDestroy = new Subject<void>();
   private stockSymbol$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  protected config$ = this.store.pipe(select(selectConfigSuccess));
+  protected currentUserMode = 'init';
   ngOnInit() {
     this.initFilteredOrders();
     this.initStockSymbol();
@@ -40,6 +46,10 @@ export class SymbolOrdersPerMinuteComponent implements OnInit, OnDestroy, OnChan
     this.stockSymbol$.next(changes.stockSymbol.currentValue);
   }
   initFilteredOrders() {
+    this.config$.subscribe(config => {
+      if (!config) { return; }
+      this.currentUserMode = config.userMode;
+    });
     this.filteredOrders$ = this.stockSymbol$.pipe(
       filter(symbol => !!symbol),
       switchMap(symbol => this.orderQueService.getOrdersBySymbol$(symbol, 1000)),
