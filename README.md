@@ -1,5 +1,5 @@
 # StockMarketDemo
-Demo for the company I can not name but rhymes with "Jim Lane"
+Demo practical for company I can not name but rhymes with "Jim Lane"
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.6.
 

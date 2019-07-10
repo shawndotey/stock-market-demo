@@ -11,7 +11,7 @@ import { select, Store } from '@ngrx/store';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent  implements OnInit {
-  title = 'the Stock Order Demo for the Company Sounding Like "Jim Lane"';
+  title = 'Stock Order Demo';
 
   constructor(private store: Store<IAppState>) {}
 

@@ -11,6 +11,7 @@ import { appReducers } from './core/app-store/app.reducers';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { HttpClientModule } from '@angular/common/http';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HttpClientModule } from '@angular/common/http';
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([ConfigEffects]),
     SymbolOverviewWidgetModule,
+    StoreDevtoolsModule.instrument(),
     ConfigManagerModule,
     AppCoreModule
   ],
