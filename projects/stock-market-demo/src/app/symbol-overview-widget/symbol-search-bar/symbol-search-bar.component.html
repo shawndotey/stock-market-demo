@@ -1,8 +1,4 @@
-<p>
-  {{searching ? 'searching...': ''}}
-</p>
-
-  <mat-form-field>
+<mat-form-field>
     <mat-select [formControl]="searchBarCtrl" placeholder="Stock" [(value)]="currentSymbolLookup">
       <mat-option>
         <ngx-mat-select-search [formControl]="symbolFilteringCtrl" [searching]="searching" [placeholderLabel]="'Search symbol or company'" ></ngx-mat-select-search>
@@ -11,6 +7,6 @@
         {{symbolLookup.name}} ({{symbolLookup.symbol}})
       </mat-option>
     </mat-select>
-  </mat-form-field>
+ </mat-form-field>
 
 
