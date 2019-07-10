@@ -12,7 +12,7 @@ This is a stream of demo stock orders, you can search from a few demo stocks suc
 
 There are three per minute aggregates; minimum price, average price and maximum price.
 
-At the bottom, there is a ngrx store based config that with restrict minimum and maximum aggregates depending on the "level" choosen.
+At the bottom, there is a ngrx store based config that will restrict view of minimum and maximum aggregates depending on the "level" choosen.
 
 ## Development server
 
