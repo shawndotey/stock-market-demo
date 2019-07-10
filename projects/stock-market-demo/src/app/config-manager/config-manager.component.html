@@ -1,8 +1,6 @@
-<p>config-manager works!</p>
 <form [formGroup]="configForm">
   <mat-form-field>
-  <mat-select [formControlName]="'userMode'" placeholder="User Mode" (value)="currentUserMode">
-    
+  <mat-select [formControlName]="'userMode'" placeholder="User Mode" (value)="currentUserMode">    
     <mat-option *ngFor="let levelKey of levelKeys" [value]="levelKey">
       {{levelKey.description}}
     </mat-option>

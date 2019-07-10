@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Output, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { filter, tap, takeUntil, debounceTime, map, delay, mergeMap } from 'rxjs/operators';
+import { filter, tap, takeUntil, debounceTime, mergeMap } from 'rxjs/operators';
 import { StockSymbolLookupService, SYMBOLS } from '@smd/core/stock-symbol-lookup/stock-symbol-lookup.service';
 import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
 
@@ -23,6 +23,7 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private symbolLookup: StockSymbolLookupService
   ) { }
+
   public currentSymbolLookup: SymbolLookup;
   public searchBarCtrl: FormControl = new FormControl();
   public symbolFilteringCtrl: FormControl = new FormControl();
@@ -34,7 +35,26 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
   protected _onDestroy = new Subject<void>();
 
   ngOnInit() {
+    this.initFilteredSymbols();
+    this.initSymbolUpdate();
+    this.loadInitalSymbolAsNeeded();
+  }
 
+  protected loadInitalSymbolAsNeeded() {
+    if (this.initalSymbol) {
+      this.symbolLookup.findMatchingSymbols$(this.initalSymbol).toPromise().then(matchingSymbols => {
+
+        const firstMatchingSymbol = matchingSymbols[0];
+        if (firstMatchingSymbol) {
+          this.searchBarCtrl.setValue(firstMatchingSymbol);
+          this.filteredSymbols = matchingSymbols;
+          this.currentSymbolLookup = firstMatchingSymbol;
+        }
+      });
+    }
+  }
+
+  protected initFilteredSymbols() {
 
     this.filteredSymbols$ = this.symbolFilteringCtrl.valueChanges.pipe(
       debounceTime(350),
@@ -53,23 +73,9 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
       this.searching = false;
       // handle error...
     });
-
-    this.initSymbolUpdate();
-
-    if (this.initalSymbol) {
-      this.symbolLookup.findMatchingSymbols$(this.initalSymbol).toPromise().then(matchingSymbols => {
-
-        const first = matchingSymbols[0];
-        if (first) {
-          this.searchBarCtrl.setValue(first);
-          this.filteredSymbols = matchingSymbols;
-          this.currentSymbolLookup = first;
-        }
-      });
-    }
   }
 
-  initSymbolUpdate() {
+  protected initSymbolUpdate() {
 
     this.symbolUpdate =  new Observable<SymbolLookup>( observable => {
       this.searchBarCtrl.valueChanges.pipe(
@@ -81,9 +87,9 @@ export class SymbolSearchBarComponent implements OnInit, OnDestroy {
 
   }
 
- ngOnDestroy() {
-   this._onDestroy.next();
-   this._onDestroy.complete();
- }
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
 
 }
