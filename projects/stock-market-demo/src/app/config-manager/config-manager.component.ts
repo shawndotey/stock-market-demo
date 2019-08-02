@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { SymbolLookup } from '@smd/core/stock-symbol-lookup/model/symbol-lookup.class';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UserMode } from '@smd/core/config/model/user-mode.enum';
 import { Store, select } from '@ngrx/store';
@@ -19,7 +18,6 @@ export class ConfigManagerComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<IAppState>) {}
 
-  public filteredSymbols: SymbolLookup[] = [];
   public currentUserMode: LevelKeys;
   public configForm = new FormGroup({
     userMode: new FormControl('', [])

@@ -2,23 +2,19 @@ import { SymbolOrdersAveragePerMinuteModule } from './symbol-orders-average-per-
 import { SymbolSearchBarModule } from './symbol-search-bar/symbol-search-bar.module';
 import { SymbolOrdersTableModule } from './symbol-orders-table/symbol-orders-table.module';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SmdSymbolOverviewWidgetComponent } from './symbol-overview-widget.component';
 import { OrderQueModule } from '@smd/core/order-que/order-que.module';
+import { SymbolOverviewWidgetModule } from './symbol-overview-widget/symbol-overview-widget.module';
+import { SharedModule } from '@smd/shared/shared.module';
 
 @NgModule({
-  declarations: [SmdSymbolOverviewWidgetComponent],
+  declarations: [],
   imports: [
-    CommonModule,
+    SharedModule,
     OrderQueModule,
-    SymbolOrdersTableModule,
-    SymbolSearchBarModule,
-    SymbolOrdersAveragePerMinuteModule
-  ],
-  providers: [
+    SymbolOverviewWidgetModule
   ],
   exports: [
-    SmdSymbolOverviewWidgetComponent
+    SymbolOverviewWidgetModule
   ]
 })
-export class SymbolOverviewWidgetModule { }
+export class SymbolWidgetsModule { }

@@ -1,9 +1,7 @@
-import { UserMode } from '@smd/core/config/model/user-mode.enum';
-import { GetConfig, UpdateConfig } from './core/config/store/actions/config.actions';
+import { GetConfig } from './core/config/store/actions/config.actions';
 import { Component, OnInit } from '@angular/core';
 import { IAppState } from './core/app-store/app.state';
-import { selectConfigSuccess } from './core/config/store/selectors/config.selector';
-import { select, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'smd-root',

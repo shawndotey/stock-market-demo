@@ -1,11 +1,11 @@
+import { SharedModule } from '@smd/shared/shared.module';
 import { DynamicScriptLoaderService } from './dynamic-script-loader.service';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
+    SharedModule
   ],
   providers: [
     DynamicScriptLoaderService

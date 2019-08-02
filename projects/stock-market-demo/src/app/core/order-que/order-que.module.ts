@@ -1,12 +1,12 @@
 import { DynamicScriptLoaderModule } from './../dynamic-script-loader/dynamic-script-loader.module';
 import { OrderQueService } from './order-que.service';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { SharedModule } from '@smd/shared/shared.module';
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
+    SharedModule,
     DynamicScriptLoaderModule
   ],
   providers: [
